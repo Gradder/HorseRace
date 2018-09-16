@@ -2,7 +2,6 @@ package com.epam.horserace;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -10,14 +9,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @ContextConfiguration(locations = {"/Beans.xml"})
 public class HelloWorldTest {
 
-  @Autowired
-  RaceController raceController;
-
   @Test
   public void clientPaysMoneyForRaceToWinOrNotButBetterToWin() {
-    //RaceService getRace
-    RaceView raceView = raceController.getRace();
 
-    
   }
 }
