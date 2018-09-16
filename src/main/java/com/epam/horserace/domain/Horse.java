@@ -5,34 +5,28 @@ public class Horse {
   private String name;
   private Breed breed;
   private Rider rider;
+  private double speed;
 
   public Horse(String name, Breed breed, Rider rider) {
     this.name = name;
     this.breed = breed;
     this.rider = rider;
+    this.speed = Math.random();
   }
 
   public String getName() {
     return name;
   }
 
-  public void setName(String name) {
-    this.name = name;
-  }
-
   public Breed getBreed() {
     return breed;
-  }
-
-  public void setBreed(Breed breed) {
-    this.breed = breed;
   }
 
   public Rider getRider() {
     return rider;
   }
 
-  public void setRider(Rider rider) {
-    this.rider = rider;
+  public double getSpeed() {
+    return speed;
   }
 }
