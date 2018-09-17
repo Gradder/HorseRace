@@ -11,9 +11,9 @@ public class Client {
   }
 
   void startHorseRace() {
-  emulationService.showInformationAboutRace();
-  emulationService.makeABet();
-  emulationService.emulateRace();
+    emulationService.showInformationAboutRace();
+    emulationService.makeABet();
+    emulationService.emulateRace();
   }
 
 }
