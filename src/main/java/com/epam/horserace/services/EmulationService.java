@@ -2,6 +2,10 @@ package com.epam.horserace.services;
 
 import com.epam.horserace.domain.Horse;
 import com.epam.horserace.domain.Race;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.StringReader;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -17,6 +21,8 @@ public class EmulationService {
   private final int breedColWidth = 15;
   private final int riderColWidth = 21;
   private int maxHorseNameLength = 0;
+  private Integer money = 0;
+  private Horse chosenHorse;
 
   public EmulationService(RaceService raceService) {
     this.raceService = raceService;
@@ -39,8 +45,78 @@ public class EmulationService {
     writer.writeTableLine();
   }
 
+  public void makeABet() {
+    Horse horse = null;
+
+    writer.writeBetHeader();
+    while (horse == null){
+      String search = offerMakeABet();
+      horse = findHorse(search);
+      if(horse == null) {
+        writer.writeTryAgain();
+      }
+      writer.writeEmptyRow();
+    }
+    writer.leftStick(0);
+    writer.writeLine(screenWith - 2);
+    writer.rightStick(0);
+
+    chosenHorse = horse;
+    chosenHorse(horse);
+  }
+
+  private void chosenHorse(Horse horse){
+    writer.leftStick(1);
+    writer.writeColumn("This horse is yours", screenWith-2);
+    System.out.println();
+    writer.writeTableLine();
+
+    writer.leftStick(0);
+    writer.writeColumn(horse.getName(), nameColWidth);
+    writer.writeColumn(horse.getBreed().getName(), breedColWidth);
+    writer.writeColumn(horse.getRider().getName(), riderColWidth);
+    System.out.println();
+    writer.leftStick(0);
+    writer.writeLine(screenWith - 2);
+    writer.rightStick(0);
+
+    betWelcome();
+  }
+
+  private void betWelcome(){
+    writer.leftStick(1);
+    writer.writeColumn("Make a bet", screenWith-3);
+    System.out.println();
+    writer.writeTableLine();
+
+    writer.leftStick(1);
+    System.out.print("Your bet: ");
+    BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+    String bet = "";
+
+    try {
+      bet = reader.readLine();
+      money = Integer.valueOf(bet);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+
+    System.out.println();
+    System.out.println("Race starts in:");
+
+    for (int i = 3; i > 0; i--) {
+      System.out.println(i);
+      try {
+        TimeUnit.MILLISECONDS.sleep(800);
+      } catch (InterruptedException e) {
+        e.printStackTrace();
+      }
+    }
+
+  }
+
   public void emulateRace() {
-    writer.writeLine(screenWith+5);
+    writer.writeLine(screenWith + 5);
     while (true) {
 
       try {
@@ -60,7 +136,7 @@ public class EmulationService {
       }
 
       System.out.println();
-      writer.writeLine(screenWith+5);
+      writer.writeLine(screenWith + 5);
 
       if (leadingHorse.getPosition() >= race.getTrackLength()) {
         announceWinner(leadingHorse);
@@ -80,8 +156,47 @@ public class EmulationService {
     writer.leftStick(0);
     writer.writeLine(screenWith - 2);
     writer.rightStick(0);
+
+    writer.leftStick(1);
+    if(chosenHorse == horse){
+      writer.writeColumn("You win! Your gain: " + money*3, screenWith-3);
+    }else{
+      writer.writeColumn("You lose! Your gain: -" + money, screenWith-3);
+    }
+
+    System.out.println();
+    writer.leftStick(0);
+    writer.writeLine(screenWith - 2);
+    writer.rightStick(0);
+
   }
 
+  private String offerMakeABet() {
+    writer.leftStick(1);
+    System.out.print("Enter horse's name, rider's name or breed to make a bet: ");
+    writer.rightStick(0);
+    writer.leftStick(1);
+    System.out.print("Search: ");
+    BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+    String search = "";
+    try {
+      search = reader.readLine();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    return search;
+  }
+
+  private Horse findHorse(String search) {
+
+    for (Horse horse : horsesInRace) {
+      if (horse.getName().equalsIgnoreCase(search) || horse.getRider().getName().equalsIgnoreCase(search)
+          || horse.getBreed().getName().equalsIgnoreCase(search)) {
+          return horse;
+      }
+    }
+    return null;
+  }
 
   private class Writer {
 
@@ -131,6 +246,17 @@ public class EmulationService {
       writeTableLine();
     }
 
+    private void writeTryAgain(){
+      leftStick(1);
+      System.out.print("Horse wasn't found. Try again!");
+      rightStick(27);
+    }
+
+    private void writeEmptyRow(){
+      writer.leftStick(1);
+      writer.rightStick(57);
+    }
+
     private void writeAnnouncementHeader() {
       System.out.println();
       writeLine(screenWith);
@@ -139,6 +265,32 @@ public class EmulationService {
       leftStick(15);
       System.out.print("Congratulations for winner!");
       rightStick(16);
+
+      writeTableLine();
+    }
+
+    private void writeBetHeader() {
+      System.out.println();
+      writeLine(screenWith);
+      System.out.println();
+
+      leftStick(24);
+      System.out.print("Make a bet");
+      rightStick(24);
+
+      writeTableLine();
+    }
+
+    private void writeChosenHorseHeader() {
+      System.out.println();
+      writeLine(screenWith);
+      System.out.println();
+
+
+
+      leftStick(24);
+      System.out.print("This horse is yours");
+      rightStick(24);
 
       writeTableLine();
     }
