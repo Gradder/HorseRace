@@ -6,7 +6,7 @@ import java.util.List;
 public class Race {
 
   private List<Horse> chosenHorses;
-  private int trackLength;
+  private int trackLength = 45;
 
   public Race(List<Horse> horses){
 
@@ -15,8 +15,6 @@ public class Race {
     for(int i =0; i < 6; i++){
       chosenHorses.add(horses.get(i));
     }
-
-    trackLength = 10 + (int)(Math.random()*10);
   }
 
   public List<Horse> getChosenHorses() {

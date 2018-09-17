@@ -12,6 +12,7 @@ public class Client {
 
   void startHorseRace() {
   emulationService.showInformationAboutRace();
+  emulationService.emulateRace();
   }
 
 }

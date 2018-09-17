@@ -19,12 +19,17 @@ public class HorseService {
     horses = new ArrayList<Horse>();
 
     ArrayList<String> breedsList = new ArrayList<String>(Arrays.asList(breeds));
+    Collections.shuffle(breedsList);
 
     ArrayList<String> ridersList = new ArrayList<String>(Arrays.asList(riders));
     Collections.shuffle(ridersList);
 
-    for (String name : names) {
-      String breedName = breedsList.get(random.nextInt(9));
+    ArrayList<String> namesList = new ArrayList<String>(Arrays.asList(names));
+    Collections.shuffle(namesList);
+
+    for (String name : namesList) {
+      String breedName = breedsList.get(0);
+      breedsList.remove(0);
 
       String riderName = ridersList.get(0);
       ridersList.remove(0);
